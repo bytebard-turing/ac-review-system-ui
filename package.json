@@ -2,6 +2,7 @@
   "name": "placer-labs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://bytebard-turing.github.io/ac-review-system-ui",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -34,7 +35,10 @@
     "start": "WATCHPACK_POLLING=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "postdeploy": "echo 'Deployed to GitHub Pages'"
   },
   "eslintConfig": {
     "extends": [
@@ -57,6 +61,7 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@types/react-virtualized": "^9.21.30"
+    "@types/react-virtualized": "^9.21.30",
+    "gh-pages": "^6.1.1"
   }
 }
