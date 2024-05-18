@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.85209f4d.css",
-    "main.js": "/static/js/main.38974edb.js",
-    "static/js/41.dcb7b213.chunk.js": "/static/js/41.dcb7b213.chunk.js",
-    "index.html": "/index.html",
-    "main.85209f4d.css.map": "/static/css/main.85209f4d.css.map",
-    "main.38974edb.js.map": "/static/js/main.38974edb.js.map",
-    "41.dcb7b213.chunk.js.map": "/static/js/41.dcb7b213.chunk.js.map"
+    "main.css": "/ac-review-system-ui/static/css/main.384e9ffc.css",
+    "main.js": "/ac-review-system-ui/static/js/main.ca55ad71.js",
+    "static/js/41.50039a61.chunk.js": "/ac-review-system-ui/static/js/41.50039a61.chunk.js",
+    "index.html": "/ac-review-system-ui/index.html",
+    "main.384e9ffc.css.map": "/ac-review-system-ui/static/css/main.384e9ffc.css.map",
+    "main.ca55ad71.js.map": "/ac-review-system-ui/static/js/main.ca55ad71.js.map",
+    "41.50039a61.chunk.js.map": "/ac-review-system-ui/static/js/41.50039a61.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.85209f4d.css",
-    "static/js/main.38974edb.js"
+    "static/css/main.384e9ffc.css",
+    "static/js/main.ca55ad71.js"
   ]
 }
