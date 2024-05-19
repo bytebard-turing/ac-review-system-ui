@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ac-review-system-ui/static/css/main.384e9ffc.css",
-    "main.js": "/ac-review-system-ui/static/js/main.3bc52a1b.js",
+    "main.js": "/ac-review-system-ui/static/js/main.1ed6f15f.js",
     "static/js/41.50039a61.chunk.js": "/ac-review-system-ui/static/js/41.50039a61.chunk.js",
     "index.html": "/ac-review-system-ui/index.html",
     "main.384e9ffc.css.map": "/ac-review-system-ui/static/css/main.384e9ffc.css.map",
-    "main.3bc52a1b.js.map": "/ac-review-system-ui/static/js/main.3bc52a1b.js.map",
+    "main.1ed6f15f.js.map": "/ac-review-system-ui/static/js/main.1ed6f15f.js.map",
     "41.50039a61.chunk.js.map": "/ac-review-system-ui/static/js/41.50039a61.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.384e9ffc.css",
-    "static/js/main.3bc52a1b.js"
+    "static/js/main.1ed6f15f.js"
   ]
 }
