@@ -3,7 +3,32 @@ import Grid from "@mui/material/Grid";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ApiService from "src/data/services";
 import { Avatar, Chip, Divider, IconButton, Typography } from "@mui/material";
-import { VisibilityOutlined } from "@mui/icons-material";
+import {
+  CheckCircle,
+  ContentCopy,
+  Pending,
+  PendingActions,
+  VisibilityOutlined,
+} from "@mui/icons-material";
+
+const COLOR_MAP = ["success", "error", "warning", "info"];
+
+// Map to store the color for each user
+const userColorMapping = new Map<string, string>();
+
+// Function to get a color for a user
+const getColorForUser = (userName: string): any => {
+  if (userColorMapping.has(userName)) {
+    // Return the existing color if the user already has one
+    return userColorMapping.get(userName)!;
+  } else {
+    // Assign a new random color to the user
+    const randomIndex = Math.floor(Math.random() * COLOR_MAP.length);
+    const color = COLOR_MAP[randomIndex];
+    userColorMapping.set(userName, color);
+    return color;
+  }
+};
 
 const columns: GridColDef<any>[] = [
   {
@@ -42,6 +67,7 @@ const columns: GridColDef<any>[] = [
     width: 150,
     renderCell: (params: any) => (
       <Chip
+        color={getColorForUser(params.row.author) as any}
         avatar={
           <Avatar>{params.row.author?.slice(0, 1)?.toUpperCase()}</Avatar>
         }
@@ -57,23 +83,32 @@ const columns: GridColDef<any>[] = [
   {
     field: "reviewStatus",
     headerName: "Review Status",
-    width: 250,
+    width: 100,
     renderCell: (params: any) => {
-      let color: any = "default";
+      let color: any = "default",
+        icon: any = null;
       switch (params.row.reviewStatus) {
         case "Approved":
           color = "success";
+          icon = <CheckCircle />;
           break;
         case "Change Requested":
           color = "error";
+          icon = <PendingActions />;
           break;
         case "Duplicate Instruction":
           color = "info";
+          icon = <ContentCopy />;
           break;
         default:
           color = "warning";
+          icon = <Pending />;
       }
-      return <Chip color={color} label={params.row.reviewStatus} />;
+      return (
+        <IconButton title={params.row.reviewStatus} color={color}>
+          {icon}
+        </IconButton>
+      );
     },
   },
   {
@@ -124,6 +159,7 @@ const createdSampleColumns: GridColDef<any>[] = [
     width: 200,
     renderCell: (params: any) => (
       <Chip
+        color={getColorForUser(params.row.author) as any}
         avatar={
           <Avatar>{params.row.assignee?.slice(0, 1)?.toUpperCase()}</Avatar>
         }
@@ -134,23 +170,32 @@ const createdSampleColumns: GridColDef<any>[] = [
   {
     field: "reviewStatus",
     headerName: "Review Status",
-    width: 250,
+    width: 100,
     renderCell: (params: any) => {
-      let color: any = "default";
+      let color: any = "default",
+        icon: any = null;
       switch (params.row.reviewStatus) {
         case "Approved":
           color = "success";
+          icon = <CheckCircle />;
           break;
         case "Change Requested":
           color = "error";
+          icon = <PendingActions />;
           break;
         case "Duplicate Instruction":
           color = "info";
+          icon = <ContentCopy />;
           break;
         default:
           color = "warning";
+          icon = <Pending />;
       }
-      return <Chip color={color} label={params.row.reviewStatus} />;
+      return (
+        <IconButton title={params.row.reviewStatus} color={color}>
+          {icon}
+        </IconButton>
+      );
     },
   },
   {
