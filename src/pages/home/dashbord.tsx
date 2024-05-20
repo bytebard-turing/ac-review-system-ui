@@ -2,9 +2,26 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ApiService from "src/data/services";
-import { Avatar, Chip, Divider, Typography } from "@mui/material";
+import { Avatar, Chip, Divider, IconButton, Typography } from "@mui/material";
+import { VisibilityOutlined } from "@mui/icons-material";
 
 const columns: GridColDef<any>[] = [
+  {
+    field: "",
+    type: "custom",
+    renderCell: (params: any, ...args) => {
+      return (
+        <IconButton
+          color="primary"
+          onClick={() =>
+            (window.location.href = `/my-review-samples/${params.row.id}`)
+          }
+        >
+          <VisibilityOutlined />
+        </IconButton>
+      );
+    },
+  },
   {
     field: "id",
     headerName: "Request Id",
@@ -20,10 +37,17 @@ const columns: GridColDef<any>[] = [
   },
   {
     field: "author",
-    type: 'custom',
+    type: "custom",
     headerName: "Author",
     width: 150,
-    renderCell: (params: any) => <Chip avatar={<Avatar>{params.row.author?.slice(0, 1)?.toUpperCase()}</Avatar>} label={params.row.author} />
+    renderCell: (params: any) => (
+      <Chip
+        avatar={
+          <Avatar>{params.row.author?.slice(0, 1)?.toUpperCase()}</Avatar>
+        }
+        label={params.row.author}
+      />
+    ),
   },
   {
     field: "level",
@@ -35,15 +59,22 @@ const columns: GridColDef<any>[] = [
     headerName: "Review Status",
     width: 250,
     renderCell: (params: any) => {
-      let color: any = 'warning';
-      if(params.row.reviewStatus === 'Approved') {
-        color = "success"
+      let color: any = "default";
+      switch (params.row.reviewStatus) {
+        case "Approved":
+          color = "success";
+          break;
+        case "Change Requested":
+          color = "error";
+          break;
+        case "Duplicate Instruction":
+          color = "info";
+          break;
+        default:
+          color = "warning";
       }
-      else if(params.row.reviewStatus === 'Change Requested') {
-        color = "error"
-      }
-      return <Chip color={color} label={params.row.reviewStatus} />
-    }
+      return <Chip color={color} label={params.row.reviewStatus} />;
+    },
   },
   {
     field: "reviewComment",
@@ -53,6 +84,22 @@ const columns: GridColDef<any>[] = [
 ];
 
 const createdSampleColumns: GridColDef<any>[] = [
+  {
+    field: "",
+    type: "custom",
+    renderCell: (params: any, ...args) => {
+      return (
+        <IconButton
+          color="primary"
+          onClick={() =>
+            (window.location.href = `/my-samples/${params.row.id}`)
+          }
+        >
+          <VisibilityOutlined />
+        </IconButton>
+      );
+    },
+  },
   {
     field: "id",
     headerName: "Request Id",
@@ -75,22 +122,36 @@ const createdSampleColumns: GridColDef<any>[] = [
     field: "assignee",
     headerName: "Reviewer",
     width: 200,
-    renderCell: (params: any) => <Chip avatar={<Avatar>{params.row.assignee?.slice(0, 1)?.toUpperCase()}</Avatar>} label={params.row.assignee} />
+    renderCell: (params: any) => (
+      <Chip
+        avatar={
+          <Avatar>{params.row.assignee?.slice(0, 1)?.toUpperCase()}</Avatar>
+        }
+        label={params.row.assignee}
+      />
+    ),
   },
   {
     field: "reviewStatus",
     headerName: "Review Status",
     width: 250,
     renderCell: (params: any) => {
-      let color: any = 'warning';
-      if(params.row.reviewStatus === 'Approved') {
-        color = "success"
+      let color: any = "default";
+      switch (params.row.reviewStatus) {
+        case "Approved":
+          color = "success";
+          break;
+        case "Change Requested":
+          color = "error";
+          break;
+        case "Duplicate Instruction":
+          color = "info";
+          break;
+        default:
+          color = "warning";
       }
-      else if(params.row.reviewStatus === 'Change Requested') {
-        color = "error"
-      }
-      return <Chip color={color} label={params.row.reviewStatus} />
-    }
+      return <Chip color={color} label={params.row.reviewStatus} />;
+    },
   },
   {
     field: "reviewComment",

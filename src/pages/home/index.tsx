@@ -1,6 +1,6 @@
 import { withAuth } from "src/hoc";
 import { Dashboard } from "./dashbord";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import * as React from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,21 +11,44 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ListItem } from "@mui/material";
-import { CodeEditReview } from "./code-edit-review";
+import { MyReviewCodeSamples } from "./my-review-code-samples";
+import { MyCodeSamples } from "./my-code-samples";
+import ApiService from "src/data/services";
+import {
+  ArticleOutlined,
+  AssignmentIndOutlined,
+  Dashboard as DashboardIcon,
+  LogoutOutlined,
+} from "@mui/icons-material";
+import { useAuthContext } from "src/context";
+
+const ROUTES = [
+  {
+    id: 1,
+    path: "/",
+    label: "Dashboard",
+    icon: <DashboardIcon />,
+  },
+  {
+    id: 2,
+    path: "/my-samples/:id?",
+    label: "My Samples",
+    icon: <ArticleOutlined />,
+  },
+  {
+    id: 3,
+    path: "/my-review-samples/:id?",
+    label: "Review Samples",
+    icon: <AssignmentIndOutlined />,
+  },
+];
 
 const drawerWidth: number = 240;
 
@@ -86,7 +109,21 @@ export const Home = withAuth(() => {
     setOpen(!open);
   };
 
+  const { handleAuthentication } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const locState = location.state;
+
+  const handleLogout = React.useCallback(() => {
+    ApiService.logout().then(() => {
+      handleAuthentication(undefined);
+    });
+  }, []);
+
+  const text = React.useMemo(() => {
+    const path = ROUTES.find((r: any) => locState?.id === r.id);
+    return path?.label || "Dashboard";
+  }, [locState]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -117,12 +154,10 @@ export const Home = withAuth(() => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Augment Review System
+              Augment Review System - {text}
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton title="Log Out" color="inherit" onClick={handleLogout}>
+              <LogoutOutlined />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -150,23 +185,19 @@ export const Home = withAuth(() => {
             }}
             component="nav"
           >
-            <ListItem onClick={() => navigate("/")}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem onClick={() => navigate("/code-edit")}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <ShoppingCartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Code Edit" />
-              </ListItemButton>
-            </ListItem>
+            {ROUTES.map((r: any) => {
+              return (
+                <ListItem
+                  key={r.label}
+                  onClick={() => navigate(r.path, { state: { id: r.id } })}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{r.icon}</ListItemIcon>
+                    <ListItemText primary={r.label} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
         </Drawer>
         <Box
@@ -182,10 +213,14 @@ export const Home = withAuth(() => {
           }}
         >
           <Toolbar />
-          <Box sx={{ mt: 4, mb: 4, width: '100%', px: 4 }}>
+          <Box sx={{ mt: 4, mb: 4, width: "100%", px: 4 }}>
             <Routes>
               <Route path="/" index element={<Dashboard />} />
-              <Route path="/code-edit" element={<CodeEditReview />} />
+              <Route path="/my-samples/:id?" element={<MyCodeSamples />} />
+              <Route
+                path="/my-review-samples/:id?"
+                element={<MyReviewCodeSamples />}
+              />
             </Routes>
           </Box>
         </Box>

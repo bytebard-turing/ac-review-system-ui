@@ -7,7 +7,6 @@ import {
 import {
   Box,
   Button,
-  CircularProgress,
   Divider,
   FormControl,
   Grid,
@@ -33,122 +32,79 @@ const StyledGridContainer = styled(Grid)({
   border: "1px dashed #1769aa",
 });
 
-export const CodeEditReview: React.FC = () => {
-  const [rows, setRows] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-  const [codeEditReviewSample, setCodeEditReviewSample] =
-    React.useState<any>(null);
-
+export const CodeEditReview: React.FC<{
+  loading: boolean;
+  codeEditReviewSample: any;
+  hideReviewSection?: boolean;
+  saveCodeSampleReview: (value: any) => void;
+}> = ({
+  codeEditReviewSample,
+  loading,
+  saveCodeSampleReview,
+  hideReviewSection = false,
+}) => {
   const [reviewStatus, setReviewStatus] = React.useState("Pending");
   const [reviewComment, setReviewComment] = React.useState("");
 
-  React.useEffect(() => {
-    setLoading(true);
-    ApiService.getFiles().then((rows) => {
-      setRows(rows);
-      setLoading(false);
-    });
-  }, []);
-
-  const saveCodeSampleReview = useCallback(() => {
-    setLoading(true);
-    const { id, name, reviewerData } = codeEditReviewSample || {};
-    ApiService.saveReview({
-      reviewerData,
-      id,
-      name,
-      reviewComment,
-      reviewStatus,
-    }).finally(() => {
-      setLoading(false);
-    });
-  }, [codeEditReviewSample, reviewComment, reviewStatus]);
-
-  const handleSampleChange = useCallback((e: any, value: any) => {
-    setLoading(true);
-    ApiService.getCodeEditSample(value)
-      .then((response) => {
-        setCodeEditReviewSample(response);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const handleSaveCodeSampleReview = React.useCallback(() => {
+    saveCodeSampleReview({ reviewComment, reviewStatus });
+  }, [reviewComment, reviewStatus, saveCodeSampleReview]);
 
   return (
-    <Paper elevation={0}>
-      <Box>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              disablePortal
-              loading={loading}
-              id="combo-box-demo"
-              onChange={handleSampleChange}
-              options={rows}
-              sx={{ width: "100%" }}
-              getOptionLabel={(option: { id: string }) => option.id}
-              renderInput={(params) => (
-                <TextField {...params} label="Choose A Code Sample" />
-              )}
-            />
-          </Grid>
-          <Grid item md={2}>
-            {loading && <CircularProgress />}
-          </Grid>
-        </Grid>
-      </Box>
+    <Paper elevation={0} sx={{ p: 2 }}>
       {!!codeEditReviewSample && (
         <Box>
-          <Grid container spacing={2} sx={{ py: 4 }}>
-            <Grid item xs={12} md={3} sm={4} lg={3} spacing={2}>
-              <Grid item spacing={2}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Review Status
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={reviewStatus}
-                    label="Review Status"
-                    onChange={(e) => setReviewStatus(e.target.value)}
+          {!hideReviewSection && (
+            <Grid container spacing={2} sx={{ py: 4 }}>
+              <Grid item xs={12} md={3} sm={4} lg={3} spacing={2}>
+                <Grid item spacing={2}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Review Status
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={reviewStatus}
+                      label="Review Status"
+                      onChange={(e) => setReviewStatus(e.target.value)}
+                    >
+                      <MenuItem value={"Approved"}>Approved</MenuItem>
+                      <MenuItem value={"Change Requested"}>
+                        Change Requested
+                      </MenuItem>
+                      <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                      <MenuItem value={"Pending"}>Pending</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={5} sm={4} lg={6} spacing={2}>
+                <TextField
+                  variant="outlined"
+                  label="Comments"
+                  multiline
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4} sm={4} lg={3} spacing={2}>
+                {codeEditReviewSample?.canEdit && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ width: "100%", height: "100%" }}
+                    disabled={!reviewStatus || !reviewComment || loading}
+                    onClick={handleSaveCodeSampleReview}
                   >
-                    <MenuItem value={"Approved"}>Approved</MenuItem>
-                    <MenuItem value={"Change Requested"}>
-                      Change Requested
-                    </MenuItem>
-                    <MenuItem value={"Rejected"}>Rejected</MenuItem>
-                    <MenuItem value={"Pending"}>Pending</MenuItem>
-                  </Select>
-                </FormControl>
+                    Save
+                  </Button>
+                )}
               </Grid>
             </Grid>
-            <Grid item xs={12} md={5} sm={4} lg={6} spacing={2}>
-              <TextField
-                variant="outlined"
-                label="Comments"
-                multiline
-                value={reviewComment}
-                onChange={(e) => setReviewComment(e.target.value)}
-                sx={{ width: "100%" }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={4} sm={4} lg={3} spacing={2}>
-              {codeEditReviewSample?.canEdit && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ width: "100%", height: "100%" }}
-                  disabled={!reviewStatus || !reviewComment || loading}
-                  onClick={saveCodeSampleReview}
-                >
-                  Save
-                </Button>
-              )}
-            </Grid>
-          </Grid>
+          )}
           <StyledGridContainer container spacing={4} sx={{ py: 4, my: 4 }}>
             <Grid item xs={12} lg={6} spacing={2}>
               <Typography variant="h5">Review Status</Typography>
