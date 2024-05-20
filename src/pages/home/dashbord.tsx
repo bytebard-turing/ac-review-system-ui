@@ -1,11 +1,20 @@
-import * as React from "react";
-import Grid from "@mui/material/Grid";
+import React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import Moment from "moment";
 import ApiService from "src/data/services";
-import { Avatar, Chip, Divider, IconButton, Typography } from "@mui/material";
+import {
+  Avatar,
+  Chip,
+  Divider,
+  IconButton,
+  Typography,
+  Grid,
+} from "@mui/material";
 import {
   CheckCircle,
   ContentCopy,
+  DoNotDisturb,
+  Edit,
   Pending,
   PendingActions,
   VisibilityOutlined,
@@ -34,7 +43,7 @@ const columns: GridColDef<any>[] = [
   {
     field: "",
     type: "custom",
-    renderCell: (params: any, ...args) => {
+    renderCell: (params: any) => {
       return (
         <IconButton
           color="primary"
@@ -52,11 +61,42 @@ const columns: GridColDef<any>[] = [
     headerName: "Request Id",
     width: 300,
   },
+
   {
-    field: "updated",
-    headerName: "Updated",
-    valueGetter: (params) => {
-      return new Date(params.row.updated).toLocaleString();
+    field: "sampleStatus",
+    headerName: "Sample Status",
+    width: 175,
+    renderCell: (params: any) => {
+      let icon: any, color: any;
+      switch (params.row.sampleStatus) {
+        case "Accepted":
+          color = "#357a38";
+          icon = <CheckCircle  />;
+          break;
+        case "Rejected":
+          color = "#ab003c";
+          icon = <DoNotDisturb />;
+          break;
+        case "Annotated":
+          color = "#1769aa";
+          icon = <Edit />;
+          break;
+      }
+      return (
+        <Typography
+          variant="body2"
+          sx={{ display: "flex", gap: 1, alignItems: "center" }}
+        >
+          <span style={{ color: color, width: 24, height: 24 }}>{icon}</span> {params.row.sampleStatus}
+        </Typography>
+      );
+    },
+  },
+  {
+    field: "created",
+    headerName: "Created",
+    valueGetter: (params: any) => {
+      return Moment(params.row.created).format("lll");
     },
     width: 300,
   },
@@ -140,11 +180,42 @@ const createdSampleColumns: GridColDef<any>[] = [
     headerName: "Request Id",
     width: 300,
   },
+
   {
-    field: "updated",
-    headerName: "Updated",
+    field: "sampleStatus",
+    headerName: "Sample Status",
+    width: 175,
+    renderCell: (params: any) => {
+      let icon: any, color: any;
+      switch (params.row.sampleStatus) {
+        case "Accepted":
+          color = "#357a38";
+          icon = <CheckCircle  />;
+          break;
+        case "Rejected":
+          color = "#ab003c";
+          icon = <DoNotDisturb />;
+          break;
+        case "Annotated":
+          color = "#1769aa";
+          icon = <Edit />;
+          break;
+      }
+      return (
+        <Typography
+          variant="body2"
+          sx={{ display: "flex", gap: 1, alignItems: "center" }}
+        >
+          <span style={{ color: color, width: 24, height: 24 }}>{icon}</span> {params.row.sampleStatus}
+        </Typography>
+      );
+    },
+  },
+  {
+    field: "created",
+    headerName: "Created",
     valueGetter: (params) => {
-      return new Date(params.row.updated).toLocaleString();
+      return Moment(params.row.created).format("lll");
     },
     width: 300,
   },
