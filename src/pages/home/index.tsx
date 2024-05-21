@@ -18,16 +18,13 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { ListItem } from "@mui/material";
-import { MyReviewCodeSamples } from "./my-review-code-samples";
-import { MyCodeSamples } from "./my-code-samples";
 import ApiService from "src/data/services";
 import {
-  ArticleOutlined,
-  AssignmentIndOutlined,
   Dashboard as DashboardIcon,
   LogoutOutlined,
 } from "@mui/icons-material";
 import { useAuthContext } from "src/context";
+import { CodeEditorView } from "./code-editor-view";
 
 const ROUTES = [
   {
@@ -35,18 +32,6 @@ const ROUTES = [
     path: "/",
     label: "Dashboard",
     icon: <DashboardIcon />,
-  },
-  {
-    id: 2,
-    path: "/my-samples/:id?",
-    label: "My Samples",
-    icon: <ArticleOutlined />,
-  },
-  {
-    id: 3,
-    path: "/my-review-samples/:id?",
-    label: "Review Samples",
-    icon: <AssignmentIndOutlined />,
   },
 ];
 
@@ -127,7 +112,7 @@ export const Home = withAuth(() => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", bgcolor: '#fff' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
           <Toolbar
@@ -216,11 +201,7 @@ export const Home = withAuth(() => {
           <Box sx={{ mt: 4, mb: 4, width: "100%", px: 4 }}>
             <Routes>
               <Route path="/" index element={<Dashboard />} />
-              <Route path="/my-samples/:id?" element={<MyCodeSamples />} />
-              <Route
-                path="/my-review-samples/:id?"
-                element={<MyReviewCodeSamples />}
-              />
+              <Route path="/:id?" element={<CodeEditorView />} />
             </Routes>
           </Box>
         </Box>

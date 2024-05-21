@@ -15,24 +15,16 @@ import {
   Paper,
   Select,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
-import ApiService from "src/data/services";
-import Autocomplete from "@mui/material/Autocomplete";
 import styled from "styled-components";
 
 const StyledGridContainer = styled(Grid)({
   border: "1px dashed #1769aa",
 });
 
-export const CodeEditReview: React.FC<{
+export const CodeViewer: React.FC<{
   loading: boolean;
   codeEditReviewSample: any;
   hideReviewSection?: boolean;
@@ -43,6 +35,7 @@ export const CodeEditReview: React.FC<{
   saveCodeSampleReview,
   hideReviewSection = false,
 }) => {
+  const [assignTo, setAssignTo] = React.useState("");
   const [reviewStatus, setReviewStatus] = React.useState("Pending");
   const [reviewComment, setReviewComment] = React.useState("");
 
@@ -56,7 +49,30 @@ export const CodeEditReview: React.FC<{
         <Box>
           {!hideReviewSection && (
             <Grid container spacing={2} sx={{ py: 4 }}>
-              <Grid item xs={12} md={3} sm={4} lg={3} spacing={2}>
+              <Grid item xs={12} sm={2} spacing={2}>
+                <Grid item spacing={2}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Assign To
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={assignTo}
+                      label="Review Status"
+                      onChange={(e) => setAssignTo(e.target.value)}
+                    >
+                      <MenuItem value={"Approved"}>Approved</MenuItem>
+                      <MenuItem value={"Change Requested"}>
+                        Change Requested
+                      </MenuItem>
+                      <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                      <MenuItem value={"Pending"}>Pending</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} sm={2} spacing={2}>
                 <Grid item spacing={2}>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
@@ -79,7 +95,7 @@ export const CodeEditReview: React.FC<{
                   </FormControl>
                 </Grid>
               </Grid>
-              <Grid item xs={12} md={5} sm={4} lg={6} spacing={2}>
+              <Grid item xs={12} sm={6} spacing={2}>
                 <TextField
                   variant="outlined"
                   label="Comments"
@@ -90,22 +106,20 @@ export const CodeEditReview: React.FC<{
                 />
               </Grid>
 
-              <Grid item xs={12} md={4} sm={4} lg={3} spacing={2}>
-                {codeEditReviewSample?.canEdit && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ width: "100%", height: "100%" }}
-                    disabled={!reviewStatus || !reviewComment || loading}
-                    onClick={handleSaveCodeSampleReview}
-                  >
-                    Save
-                  </Button>
-                )}
+              <Grid item xs={12} sm={2} spacing={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ width: "100%", height: "100%" }}
+                  disabled={!reviewStatus || !reviewComment || loading}
+                  onClick={handleSaveCodeSampleReview}
+                >
+                  Save
+                </Button>
               </Grid>
             </Grid>
           )}
-          <StyledGridContainer container spacing={4} sx={{ py: 4, my: 4 }}>
+          {/* <StyledGridContainer container spacing={4} sx={{ py: 4, my: 4 }}>
             <Grid item xs={12} lg={6} spacing={2}>
               <Typography variant="h5">Review Status</Typography>
               <Paper>
@@ -187,7 +201,7 @@ export const CodeEditReview: React.FC<{
                 </TableContainer>
               </Paper>
             </Grid>
-          </StyledGridContainer>
+          </StyledGridContainer> */}
           <StyledGridContainer container spacing={4} sx={{ py: 4, my: 4 }}>
             <Grid item xs={12} lg={6} spacing={2}>
               <Typography variant="h6">

@@ -27,6 +27,7 @@ const userColorMapping = new Map<string, string>();
 
 // Function to get a color for a user
 const getColorForUser = (userName: string): any => {
+  userName = userName?.split("@")?.[0];
   if (userColorMapping.has(userName)) {
     // Return the existing color if the user already has one
     return userColorMapping.get(userName)!;
@@ -39,95 +40,66 @@ const getColorForUser = (userName: string): any => {
   }
 };
 
-const columns: GridColDef<any>[] = [
-  {
-    field: "",
-    type: "custom",
-    renderCell: (params: any) => {
-      return (
-        <IconButton
-          color="primary"
-          onClick={() =>
-            (window.location.href = `/my-review-samples/${params.row.id}`)
-          }
-        >
-          <VisibilityOutlined />
-        </IconButton>
-      );
-    },
-  },
+const baseColumns = [
   {
     field: "id",
     headerName: "Request Id",
     width: 300,
   },
-
-  {
-    field: "sampleStatus",
-    headerName: "Sample Status",
-    width: 175,
-    renderCell: (params: any) => {
-      let icon: any, color: any;
-      switch (params.row.sampleStatus) {
-        case "Accepted":
-          color = "#357a38";
-          icon = <CheckCircle  />;
-          break;
-        case "Rejected":
-          color = "#ab003c";
-          icon = <DoNotDisturb />;
-          break;
-        case "Annotated":
-          color = "#1769aa";
-          icon = <Edit />;
-          break;
-      }
-      return (
-        <Typography
-          variant="body2"
-          sx={{ display: "flex", gap: 1, alignItems: "center" }}
-        >
-          <span style={{ color: color, width: 24, height: 24 }}>{icon}</span> {params.row.sampleStatus}
-        </Typography>
-      );
-    },
-  },
   {
     field: "created",
-    headerName: "Created",
+    headerName: "Updated",
     valueGetter: (params: any) => {
-      return Moment(params.row.created).format("lll");
+      return Moment(params.row.udpated).format("lll");
     },
-    width: 300,
+    width: 200,
   },
   {
     field: "author",
     type: "custom",
     headerName: "Author",
-    width: 150,
+    width: 175,
     renderCell: (params: any) => (
       <Chip
-        color={getColorForUser(params.row.author) as any}
+        color={getColorForUser(params.row.reviewerData.author) as any}
         avatar={
-          <Avatar>{params.row.author?.slice(0, 1)?.toUpperCase()}</Avatar>
+          <Avatar>
+            {params.row.reviewerData.author?.slice(0, 1)?.toUpperCase()}
+          </Avatar>
         }
-        label={params.row.author}
+        label={params.row.reviewerData.author}
       />
     ),
   },
   {
-    field: "level",
-    headerName: "Review Level",
-    width: 130,
+    field: "currentAssignedTo",
+    type: "custom",
+    headerName: "Assigned To",
+    width: 150,
+    renderCell: (params: any) => (
+      <Chip
+        color={
+          getColorForUser(params.row.reviewerData.currentAssignedTo) as any
+        }
+        avatar={
+          <Avatar>
+            {params.row.reviewerData.currentAssignedTo
+              ?.slice(0, 1)
+              ?.toUpperCase()}
+          </Avatar>
+        }
+        label={params.row.reviewerData.currentAssignedTo}
+      />
+    ),
   },
   {
-    field: "reviewStatus",
-    headerName: "Review Status",
-    width: 100,
+    field: "reviewerData",
+    headerName: "Status",
+    width: 175,
     renderCell: (params: any) => {
       let color: any = "default",
         icon: any = null;
-      switch (params.row.reviewStatus) {
+      switch (params.row.reviewerData?.status) {
         case "Approved":
           color = "success";
           icon = <CheckCircle />;
@@ -145,17 +117,37 @@ const columns: GridColDef<any>[] = [
           icon = <Pending />;
       }
       return (
-        <IconButton title={params.row.reviewStatus} color={color}>
-          {icon}
+        <Typography
+          component={"p"}
+          variant="body2"
+          title={params.row.reviewerData?.status}
+        >
+          <IconButton color={color}>{icon}</IconButton>{" "}
+          {params.row.reviewerData?.status}
+        </Typography>
+      );
+    },
+  },
+];
+
+const columns: GridColDef<any>[] = [
+  {
+    field: "",
+    type: "custom",
+    renderCell: (params: any) => {
+      return (
+        <IconButton
+          color="primary"
+          onClick={() =>
+            (window.location.href = `/${params.row.fileId}`)
+          }
+        >
+          <VisibilityOutlined />
         </IconButton>
       );
     },
   },
-  {
-    field: "reviewComment",
-    headerName: "Comment",
-    width: 250,
-  },
+  ...baseColumns,
 ];
 
 const createdSampleColumns: GridColDef<any>[] = [
@@ -167,7 +159,7 @@ const createdSampleColumns: GridColDef<any>[] = [
         <IconButton
           color="primary"
           onClick={() =>
-            (window.location.href = `/my-samples/${params.row.id}`)
+            (window.location.href = `/${params.row.fileId}`)
           }
         >
           <VisibilityOutlined />
@@ -175,105 +167,7 @@ const createdSampleColumns: GridColDef<any>[] = [
       );
     },
   },
-  {
-    field: "id",
-    headerName: "Request Id",
-    width: 300,
-  },
-
-  {
-    field: "sampleStatus",
-    headerName: "Sample Status",
-    width: 175,
-    renderCell: (params: any) => {
-      let icon: any, color: any;
-      switch (params.row.sampleStatus) {
-        case "Accepted":
-          color = "#357a38";
-          icon = <CheckCircle  />;
-          break;
-        case "Rejected":
-          color = "#ab003c";
-          icon = <DoNotDisturb />;
-          break;
-        case "Annotated":
-          color = "#1769aa";
-          icon = <Edit />;
-          break;
-      }
-      return (
-        <Typography
-          variant="body2"
-          sx={{ display: "flex", gap: 1, alignItems: "center" }}
-        >
-          <span style={{ color: color, width: 24, height: 24 }}>{icon}</span> {params.row.sampleStatus}
-        </Typography>
-      );
-    },
-  },
-  {
-    field: "created",
-    headerName: "Created",
-    valueGetter: (params) => {
-      return Moment(params.row.created).format("lll");
-    },
-    width: 300,
-  },
-  {
-    field: "level",
-    headerName: "Review Level",
-    width: 130,
-  },
-  {
-    field: "assignee",
-    headerName: "Reviewer",
-    width: 200,
-    renderCell: (params: any) => (
-      <Chip
-        color={getColorForUser(params.row.author) as any}
-        avatar={
-          <Avatar>{params.row.assignee?.slice(0, 1)?.toUpperCase()}</Avatar>
-        }
-        label={params.row.assignee}
-      />
-    ),
-  },
-  {
-    field: "reviewStatus",
-    headerName: "Review Status",
-    width: 100,
-    renderCell: (params: any) => {
-      let color: any = "default",
-        icon: any = null;
-      switch (params.row.reviewStatus) {
-        case "Approved":
-          color = "success";
-          icon = <CheckCircle />;
-          break;
-        case "Change Requested":
-          color = "error";
-          icon = <PendingActions />;
-          break;
-        case "Duplicate Instruction":
-          color = "info";
-          icon = <ContentCopy />;
-          break;
-        default:
-          color = "warning";
-          icon = <Pending />;
-      }
-      return (
-        <IconButton title={params.row.reviewStatus} color={color}>
-          {icon}
-        </IconButton>
-      );
-    },
-  },
-  {
-    field: "reviewComment",
-    headerName: "Comment",
-    width: 250,
-  },
+  ...baseColumns,
 ];
 
 export const Dashboard = () => {

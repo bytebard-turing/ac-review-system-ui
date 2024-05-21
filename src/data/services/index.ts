@@ -75,7 +75,7 @@ class ApiService {
     }
   };
 
-  getCodeEditSample = async (payload: any): Promise<any> => {
+  getCodeEditSampleForView = async (payload: any): Promise<any> => {
     try {
       const { data: response }: APIResponse = await useFetch(
         `${BASE_URL}api/code-samples/view`,
@@ -83,6 +83,25 @@ class ApiService {
           mode: "cors",
           method: "POST",
           body: JSON.stringify(payload),
+          headers: {
+            Authorization: sessionStorage.getItem("user_auth_token") ?? "",
+          },
+        }
+      );
+      return response?.data as unknown as Task;
+    } catch (err: any) {
+      raiseAlert((err?.data as unknown as ErrorResponse)?.message);
+      return Promise.reject((err as unknown as ErrorResponse)?.data);
+    }
+  };
+
+  getCodeEditSample = async (id: string): Promise<any> => {
+    try {
+      const { data: response }: APIResponse = await useFetch(
+        `${BASE_URL}api/code-samples/${id}/edit`,
+        {
+          mode: "cors",
+          method: "GET",
           headers: {
             Authorization: sessionStorage.getItem("user_auth_token") ?? "",
           },
